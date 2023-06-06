@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <h1>Chatbot</h1>
+    <form method="POST" action="/chat">
+      <input type="text" name="message" autocomplete="off" />
+      <input type="submit" value="Send" />
+    </form>
+    <div id="chat-container">
+      <div id="chat-log"></div>
+    </div>
+    <!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  
+    <form id="chat-form" method="POST" action="/chat">
+      <input type="text" name="message" autocomplete="off" />
+      <input type="submit" value="Send" />
+    </form>
+    <div id="chat-container">
+      <div id="chat-log"></div>
+      <div id="audio-container"></div>
+    </div>
+    <script>
+      const chatForm = document.getElementById('chat-form');
+      const chatLog = document.getElementById('chat-log');
+      const audioContainer = document.getElementById('audio-container');
+
+      chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(chatForm);
+        fetch('/chat', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          chatLog.innerHTML += `<p><strong>You:</strong> ${formData.get('message')}</p>`;
+          chatLog.innerHTML += `<p><strong>Bot:</strong> ${data.text}</p>`;
+          if (data.audio) {
+            const audio = new Audio('data:audio/mp3;base64,' + data.audio);
+            audioContainer.innerHTML = '';
+            audioContainer.appendChild(audio);
+            audio.play();
+          }
+        });
+        chatForm.reset();
+      });
+    </script>
+ 
+
+  </body>
+</html>
